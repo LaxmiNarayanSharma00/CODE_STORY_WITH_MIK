@@ -50,7 +50,7 @@ using namespace std;
 //     return 0;
 // }
 
-// METHOD 1 RECURSION + MEMORISATION
+// METHOD TABULATION + CONSTANT SPACE
 
 
 class Solution
@@ -60,37 +60,33 @@ public:
 
     int rob(vector<int> &nums)
     {
-        int count = nums.size() - 2;
+       int n=nums.size();
+       if (n<=3)
+       {
+         auto max_it= max_element(nums.begin(),nums.end());
+         return *max_it;
+       }
 
-         vector<int> dp1(105,-1);
-         vector<int> dp2(105,-1);
-
-         dp1[0] = nums[0]; // HERE BASE CASE DEFINED
-        if (count >= 1)
-        {
-            dp1[1] = max(nums[0], nums[1]); // THIS IS ALSO BASE CASE
-        }
-        
-        for (int i = 2; i <= count; i++)
-        {
-            dp1[i]=max(dp1[i-1],dp1[i-2]+nums[i]);
-        }
-
-
-        int count2 = nums.size() - 1;
-   
-         dp2[1] = nums[1]; // HERE BASE CASE DEFINED
-        if (count2 >= 1)
-        {
-            dp2[2] = max(nums[1], nums[2]); // THIS IS ALSO BASE CASE
-        }
-        
-        for (int i = 3; i <= count2; i++)
-        {
-            dp2[i]=max(dp2[i-1],dp2[i-2]+nums[i]);
-        }
-        return max(dp1[count],dp2[count2]);
-
+       int curr,prev1,prev2;
+       prev2=nums[0];
+       prev1=max(nums[0],nums[1]);
+       for (int i = 2; i < n-1; i++)
+       {
+         curr=max(prev1,prev2+nums[i]);
+         prev2=prev1;
+         prev1=curr;
+       }
+       int ans_p1=curr;
+       
+       prev2=nums[1];
+       prev1=max(nums[1],nums[2]);
+       for (int i = 3; i < n; i++)
+       {
+         curr=max(prev1,prev2+nums[i]);
+        prev2=prev1;
+         prev1=curr;
+       }
+       return max(ans_p1,curr);
     }
 };
 
@@ -98,7 +94,7 @@ int main()
 {
 
     Solution sol;
-    vector<int> nums = {1,2,3};
+    vector<int> nums = {200,3,140,20,10};
     cout << sol.rob(nums);
     return 0;
 }
